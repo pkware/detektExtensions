@@ -1,0 +1,14 @@
+####
+# Gradle folder
+#
+.gradle
+
+####
+# IntelliJ
+#
+**/.idea/*
+
+####
+# Build folder
+#
+build/
