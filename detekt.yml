@@ -55,10 +55,6 @@ exceptions:
      - Throwable
     allowedExceptionNameRegex: '_|(ignore|expected|cause).*'
 
-# Formatting is handled by ktlint directly
-formatting:
-  active: false
-
 # The naming rules exclude test classes by default. Since we want naming rules to apply
 # to test classes, we need to override the default exclude rules with an empty list.
 naming:
@@ -180,7 +176,7 @@ style:
     active: true
   UnderscoresInNumericLiterals:
     active: true
-    acceptableDecimalLength: 5
+    acceptableLength: 5
   UnnecessaryFilter:
     active: true
   UnnecessaryLet:
