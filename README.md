@@ -2,26 +2,32 @@
 This project contains extensions for the Detekt linter written in Kotlin.
 See [Extending Detekt](https://detekt.github.io/detekt/extensions.html) for more information.
 
-The following Detekt rule extensions have been written for the Detekt linter:
+## The following Detekt rule extensions have been written for the Detekt linter:
 * EnforceStaticImport-
   * This rule extension looks for methods that should be statically imported and issues a code smell if they
     are found.
-  * This rule extension requires that the classpath of Detekt be set properly to provide a binding context for the
+  * The extension requires that the classpath of Detekt be set properly to provide a binding context for the
     methods that should be statically imported.
      * See [Detekt Type Resolution](https://detekt.github.io/detekt/type-resolution.html) for details
-     * An example of setting the classpath of detekt within `build.gradle.kts` is:
+     * Examples of setting the classpath of detekt within `build.gradle.kts` are:
     ```kotlin
     tasks.withType<Detekt>().configureEach {
         val paths = mutableListOf(
                 project.configurations.getByName("detekt")
             )
-            classpath.setFrom(paths)
+        classpath.setFrom(paths)
     }
     ```
-  * This rule can be configured in a `detekt.yml` file under the import set of rules,
-    see [detekt.yml](detekt.yml) for more information
+    or
+    ```kotlin
+    tasks.withType<Detekt>().configureEach {
+        dependsOn("detektMain", "detektTest")
+    }
+    ```
+  * Rule configuration can be done in the `detekt.yml` file under the import set of rules.
+    * See [detekt.yml](detekt.yml) for more information.
 
-In order to import this extension into your project that is also using detekt do the following:
+## In order to import this extension into your project that is also using detekt do the following:
 * ensure your `settings.gradle.kts` file can pull dependencies from maven central.
 ```kotlin
 dependencyResolutionManagement {
@@ -46,3 +52,22 @@ import:
       - 'com.google.common.truth.Truth.assertThat'
       - 'org.junit.jupiter.params.provider.Arguments.arguments'
 ```
+
+## Releasing:
+1. Make and checkout a release branch on github.
+2. Change the version in gradle.properties to a non-SNAPSHOT version.
+3. Update the CHANGELOG.md for the impending release.
+4. Run `git commit -am "Release Detekt Extensions X.Y.Z."` (where X.Y.Z is the new version) in the terminal or command
+line.
+5. Make a PR with your changes.
+6. Merge the release PR after approval, tag the commit on the main branch with
+`git tag -a X.Y.Z -m "Detekt Extensions X.Y.Z"`(X.Y.Z is the new version).
+7. Run `git push --tags`.
+8. Run `./gradlew publish` in the terminal or command line.
+9. Visit [Sonatype Nexus](https://oss.sonatype.org/) and promote the artifact.
+10. Update `gradle.properties` to the next SNAPSHOT version.
+11. Run `git commit -am "Prepare next development version."`
+12. Make a PR with your changes.
+13. Merge the next version PR after approval.
+
+If step 8 or 9 fails, drop the Sonatype repo, fix the problem, commit, and start again at step 8.

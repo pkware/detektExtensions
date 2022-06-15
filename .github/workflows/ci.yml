@@ -30,19 +30,6 @@ jobs:
       name: Build with Gradle
       with:
         arguments: build
-        # Need to add the properties here to re-use the Gradle daemon during publishing
-        properties: |
-          NEXUS_USERNAME=${{ secrets.NEXUS_USERNAME }}
-          NEXUS_PASSWORD=${{ secrets.NEXUS_PASSWORD }}
-
-    - uses: burrunan/gradle-cache-action@cbdf4342ff988d143aa7a5aeceedffafb8c74bcf #v1.10
-      name: Publish Maven artifacts
-      if: ${{ github.ref == 'refs/heads/main' || contains(github.ref, 'release/') }}
-      with:
-        arguments: publish
-        properties: |
-          NEXUS_USERNAME=${{ secrets.NEXUS_USERNAME }}
-          NEXUS_PASSWORD=${{ secrets.NEXUS_PASSWORD }}
 
     - name: Upload Test Results
       if: always()
