@@ -27,7 +27,7 @@ dependencies {
     testRuntimeOnly(libs.junit.jupiter.engine)
 }
 
-// <editor-fold desc="Publishing">
+// <editor-fold desc="Publishing and Signing">
 
 java {
     withJavadocJar()
@@ -50,6 +50,14 @@ publishing {
                     developerConnection.set("scm:git:ssh://github.com/pkware/detektExtensions.git")
                     url.set("https://github.com/pkware/detektExtensions")
                 }
+
+                licenses {
+                    license {
+                        name.set("MIT License")
+                        distribution.set("repo")
+                        url.set("https://github.com/pkware/detektExtensions/blob/master/LICENSE")
+                    }
+                }
             }
         }
     }
@@ -64,17 +72,9 @@ publishing {
     }
 }
 
-val signingKeyId: String? by project
-val signingKey: String? by project
-val signingPassword: String? by project
-
-tasks.withType<Sign>().configureEach {
-    onlyIf {
-        !signingKeyId.isNullOrEmpty() &&
-            !signingKey.isNullOrEmpty() &&
-            !signingPassword.isNullOrEmpty() &&
-            gradle.taskGraph.hasTask("publish")
-    }
+signing {
+    // Signing credentials are stored locally in the user's global gradle.properties file.
+    // See https://docs.gradle.org/current/userguide/signing_plugin.html#sec:signatory_credentials for more information.
     sign(publishing.publications["mavenJava"])
 }
 
@@ -85,13 +85,13 @@ val Project.releaseRepositoryUrl: String
     get() = properties.getOrDefault(
         "RELEASE_REPOSITORY_URL",
 
-        "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+        "https://oss.sonatype.org/service/local/staging/deploy/maven2"
     ).toString()
 
 val Project.snapshotRepositoryUrl: String
     get() = properties.getOrDefault(
         "SNAPSHOT_REPOSITORY_URL",
-        "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+        "https://oss.sonatype.org/content/repositories/snapshots"
     ).toString()
 
 val Project.repositoryUsername: String
