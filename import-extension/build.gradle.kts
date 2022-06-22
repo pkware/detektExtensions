@@ -43,7 +43,15 @@ publishing {
                 name.set(pomName)
                 packaging = pomPackaging
                 description.set(pomDescription)
+                url.set("https://github.com/pkware/detektExtensions")
                 setPkwareOrganization()
+
+                developers {
+                    developer {
+                        id.set("all")
+                        name.set("PKWARE, Inc.")
+                    }
+                }
 
                 scm {
                     connection.set("scm:git:git://github.com/pkware/detektExtensions.git")
