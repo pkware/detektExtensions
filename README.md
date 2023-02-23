@@ -57,11 +57,11 @@ import:
 1. Make and checkout a release branch on github.
 2. Change the version in gradle.properties to a non-SNAPSHOT version.
 3. Update the CHANGELOG.md for the impending release.
-4. Run `git commit -am "Release Detekt Extensions X.Y.Z."` (where X.Y.Z is the new version) in the terminal or command
+4. Run `git commit -am "Release X.Y.Z."` (where X.Y.Z is the new version) in the terminal or command
 line.
 5. Make a PR with your changes.
 6. Merge the release PR after approval, tag the commit on the main branch with
-`git tag -a X.Y.Z -m "Detekt Extensions X.Y.Z"`(X.Y.Z is the new version).
+`git tag -a X.Y.Z -m "X.Y.Z"`(X.Y.Z is the new version).
 7. Run `git push --tags`.
 8. Run `./gradlew publish` in the terminal or command line.
 9. Visit [Sonatype Nexus](https://oss.sonatype.org/) and promote the artifact.
