@@ -56,7 +56,7 @@ class EnforceStaticImportTest {
 
         assertThat(findings)
             .hasSize(1)
-            .hasSourceLocation(3, 18)
+            .hasStartSourceLocation(4, 30)
     }
 
     @Test
@@ -86,9 +86,9 @@ class EnforceStaticImportTest {
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings).hasSize(2)
-        assertThat(findings).hasSourceLocations(
-            SourceLocation(6, 11),
-            SourceLocation(8, 26)
+        assertThat(findings).hasStartSourceLocations(
+            SourceLocation(7, 23),
+            SourceLocation(9, 38)
         )
     }
 
@@ -108,7 +108,7 @@ class EnforceStaticImportTest {
 
         assertThat(findings)
             .hasSize(1)
-            .hasSourceLocation(3, 28)
+            .hasStartSourceLocation(4, 40)
     }
 
     @Test
@@ -127,9 +127,9 @@ class EnforceStaticImportTest {
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings).hasSize(2)
-        assertThat(findings).hasSourceLocations(
-            SourceLocation(3, 18),
-            SourceLocation(4, 12)
+        assertThat(findings).hasStartSourceLocations(
+            SourceLocation(4, 30),
+            SourceLocation(5, 24)
         )
     }
 
@@ -149,9 +149,9 @@ class EnforceStaticImportTest {
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings).hasSize(2)
-        assertThat(findings).hasSourceLocations(
-            SourceLocation(4, 22),
-            SourceLocation(5, 23)
+        assertThat(findings).hasStartSourceLocations(
+            SourceLocation(5, 34),
+            SourceLocation(6, 35)
         )
     }
 
@@ -172,7 +172,7 @@ class EnforceStaticImportTest {
 
         assertThat(findings)
             .hasSize(1)
-            .hasSourceLocation(4, 22)
+            .hasStartSourceLocation(5, 38)
     }
 
     @Test
@@ -192,7 +192,7 @@ class EnforceStaticImportTest {
 
         assertThat(findings)
             .hasSize(1)
-            .hasSourceLocation(5, 23)
+            .hasStartSourceLocation(6, 39)
     }
 
     @Test
@@ -209,7 +209,7 @@ class EnforceStaticImportTest {
 
         assertThat(findings)
             .hasSize(1)
-            .hasSourceLocation(2, 22)
+            .hasStartSourceLocation(3, 38)
     }
 
     @Test
@@ -238,9 +238,9 @@ class EnforceStaticImportTest {
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings).hasSize(2)
-        assertThat(findings).hasSourceLocations(
-            SourceLocation(13, 22),
-            SourceLocation(14, 32),
+        assertThat(findings).hasStartSourceLocations(
+            SourceLocation(14, 38),
+            SourceLocation(15, 48),
         )
     }
 
@@ -276,9 +276,9 @@ class EnforceStaticImportTest {
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings).hasSize(2)
-        assertThat(findings).hasSourceLocations(
-            SourceLocation(13, 22),
-            SourceLocation(14, 32),
+        assertThat(findings).hasStartSourceLocations(
+            SourceLocation(14, 38),
+            SourceLocation(15, 48),
         )
     }
 
