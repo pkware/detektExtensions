@@ -3,9 +3,6 @@
 
 name: Build & test
 
-env:
-  GRADLE_OPTS: -Dkotlin.compiler.execution.strategy="in-process"
-
 on:
   pull_request:
   push:
@@ -24,7 +21,7 @@ jobs:
       uses: actions/setup-java@v2
       with:
         java-version: 11
-        distribution: 'adopt'
+        distribution: 'temurin'
 
     - uses: burrunan/gradle-cache-action@cbdf4342ff988d143aa7a5aeceedffafb8c74bcf #v1.10
       name: Build with Gradle

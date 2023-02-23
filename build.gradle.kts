@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     alias(libs.plugins.ktlint) apply false
     alias(libs.plugins.detekt)
-    kotlin("jvm") version "1.5.30" apply false
+    kotlin("jvm") version "1.7.21" apply false
 }
 
 subprojects {
@@ -43,6 +43,9 @@ subprojects {
 
     dependencies {
         detektPlugins(project(":import-extension"))
+        // Work around to get libs.detekt.rules.libraries in subprojects:
+        // see https://github.com/gradle/gradle/issues/16634
+        detektPlugins(rootProject.libs.detekt.rules.libraries)
     }
 
     tasks.withType<Detekt>().configureEach {

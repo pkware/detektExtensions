@@ -89,7 +89,7 @@ potential-bugs:
     active: true
   IgnoredReturnValue:
     active: true
-    restrictToAnnotatedMethods: true
+    restrictToConfig: true
     returnValueAnnotations: ['*.CheckReturnValue', '*.CheckResult']
   MapGetWithNotNullAssertionOperator:
     active: true
@@ -138,20 +138,10 @@ style:
     methods:
       - 'kotlin.io.println'
       - 'kotlin.io.print'
-  ForbiddenPublicDataClass:
-    active: true
-    excludes: ['**']
-    ignorePackages: ['*.internal', '*.internal.*']
   ForbiddenVoid:
     active: true
     ignoreOverridden: false
     ignoreUsageInGenerics: false
-  LibraryCodeMustSpecifyReturnType:
-    # Enforced by the compiler
-    active: false
-  LibraryEntitiesShouldNotBePublic:
-    # Enforced by the compiler
-    active: false
   MandatoryBracesIfStatements:
     active: true
   MandatoryBracesLoops:
@@ -208,4 +198,17 @@ style:
     active: false
   MagicNumber:
     # We usually catch these in code review, and more often than not, the constants aren't very magical
+    active: false
+
+libraries:
+  active: true
+  ForbiddenPublicDataClass:
+    active: true
+    excludes: [ '**' ]
+    ignorePackages: [ '*.internal', '*.internal.*' ]
+  LibraryCodeMustSpecifyReturnType:
+    # Enforced by the compiler
+    active: false
+  LibraryEntitiesShouldNotBePublic:
+    # Enforced by the compiler
     active: false
