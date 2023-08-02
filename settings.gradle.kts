@@ -4,8 +4,6 @@ include(
 
 rootProject.name = "DetektExtensions"
 
-enableFeaturePreview("VERSION_CATALOGS")
-
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
