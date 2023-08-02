@@ -25,11 +25,11 @@ comments:
     searchInInnerObject: true
     searchInInnerInterface: true
   UndocumentedPublicFunction:
-    excludes: ['**/test/**']
     active: true
+    excludes: ['**/test/**']
   UndocumentedPublicProperty:
-    excludes: ['**/test/**']
     active: true
+    excludes: ['**/test/**']
 
 complexity:
   active: false
@@ -45,14 +45,14 @@ exceptions:
   TooGenericExceptionCaught:
     active: true
     exceptionNames:
-     - ArrayIndexOutOfBoundsException
-     - Error
-     - Exception
-     - IllegalMonitorStateException
-     - NullPointerException
-     - IndexOutOfBoundsException
-     - RuntimeException
-     - Throwable
+      - ArrayIndexOutOfBoundsException
+      - Error
+      - Exception
+      - IllegalMonitorStateException
+      - NullPointerException
+      - IndexOutOfBoundsException
+      - RuntimeException
+      - Throwable
     allowedExceptionNameRegex: '_|(ignore|expected|cause).*'
 
 # The naming rules exclude test classes by default. Since we want naming rules to apply
@@ -83,9 +83,13 @@ potential-bugs:
     active: true
   DontDowncastCollectionTypes:
     active: true
-  ExitOutsideMain:
+  DoubleMutabilityForCollection:
     active: true
-  HasPlatformType:
+    # Test directories might want to reassign variables for result collections
+    excludes: [ '**/test/**' ]
+  ElseCaseInsteadOfExhaustiveWhen:
+    active: true
+  ExitOutsideMain:
     active: true
   IgnoredReturnValue:
     active: true
@@ -93,15 +97,19 @@ potential-bugs:
     returnValueAnnotations: ['*.CheckReturnValue', '*.CheckResult']
   MapGetWithNotNullAssertionOperator:
     active: true
+    # test directories will want to throw NPE's with maps
+    excludes: [ '**/test/**' ]
   NullableToStringCall:
+    active: true
+    ignoreFunction:
+      - 'toString()'
+  NullCheckOnMutableProperty:
+    active: true
+  PropertyUsedBeforeDeclaration:
     active: true
   UnconditionalJumpStatementInLoop:
     active: true
-  UnreachableCatchBlock:
-    active: true
-  UnusedUnaryOperator:
-    active: true
-  UselessPostfixExpression:
+  UnnecessaryNotNullCheck:
     active: true
 
 style:
@@ -112,6 +120,11 @@ style:
     active: true
   DataClassShouldBeImmutable:
     active: true
+  DestructuringDeclarationWithTooManyEntries:
+    active: true
+    maxDestructuringEntries: 4
+  DoubleNegativeLambda:
+    active: true
   EqualsOnSignatureLine:
     active: true
   ExplicitCollectionElementAccessMethod:
@@ -119,6 +132,8 @@ style:
   ExpressionBodySyntax:
     active: true
     includeLineWrapping: true
+  ForbiddenAnnotation:
+    active: true
   ForbiddenImport:
     active: true
     imports:
@@ -128,22 +143,34 @@ style:
       - 'org.junit.BeforeClass'
       - 'org.junit.After'
       - 'org.junit.AfterClass'
-    forbiddenPatterns: 'junit.framework.*'
+      - 'org.junit.jupiter.api.Assertions'
+    forbiddenPatterns: '(?:junit\.framework|org\.junit\.jupiter\.api\.Assertions)\.(?!assertThrows).+'
   ForbiddenComment:
-    active: true
-    values: ['FIXME', 'STOPSHIP']
+    comments:
+      - reason: 'Forbidden FIXME todo marker in comment, please fix the problem.'
+        value: 'FIXME'
+      - reason: 'Forbidden STOPSHIP todo marker in comment, please address the problem before shipping the code.'
+        value: 'STOPSHIP'
+      - reason: 'Authors are not recorded in KDoc.'
+        value: '@author'
   ForbiddenMethodCall:
     active: true
-    excludes: ['**/test/**']
+    excludes: [ '**/test/**' ]
     methods:
       - 'kotlin.io.println'
       - 'kotlin.io.print'
+      - 'java.nio.file.Path.toFile'
   ForbiddenVoid:
     active: true
     ignoreOverridden: false
     ignoreUsageInGenerics: false
-  MandatoryBracesIfStatements:
+  LoopWithTooManyJumpStatements:
+    maxJumpCount: 3
+  BracesOnIfStatements:
     active: true
+  BracesOnWhenStatements:
+    active: true
+    multiLine: 'necessary'
   MandatoryBracesLoops:
     active: true
   MaxLineLength:
@@ -152,14 +179,12 @@ style:
   NewLineAtEndOfFile:
     # Specified by editorconfig & enforced by ktlint
     active: false
-  OptionalWhenBraces:
+  NullableBooleanCheck:
     active: true
   RedundantExplicitType:
     active: true
-  RedundantHigherOrderMapUsage:
-    active: true
   RedundantVisibilityModifierRule:
-    active: true
+    active: false
   ReturnCount:
     active: false
   SpacingBetweenPackageAndImports:
@@ -167,17 +192,14 @@ style:
   UnderscoresInNumericLiterals:
     active: true
     acceptableLength: 5
-  UnnecessaryFilter:
+  UnnecessaryBackticks:
     active: true
+  # Disabled because it produces false positive when using JUnit's @Nested classes
+  UnnecessaryInnerClass:
+    active: false
   UnnecessaryLet:
     active: true
   UntilInsteadOfRangeTo:
-    active: true
-  UseArrayLiteralsInAnnotations:
-    active: true
-  UseCheckNotNull:
-    active: true
-  UseCheckOrError:
     active: true
   UseEmptyCounterpart:
     active: true
@@ -185,13 +207,14 @@ style:
     active: true
   UseIfInsteadOfWhen:
     active: true
-  UseIsNullOrEmpty:
-    active: true
-  UseOrEmpty:
-    active: true
-  UseRequire:
+    ignoreWhenContainingVariableDeclaration: true
+  UseLet:
     active: true
   UseRequireNotNull:
+    active: true
+  UseSumOfInsteadOfFlatMapSize:
+    active: true
+  UnnecessaryBracesAroundTrailingLambda:
     active: true
   WildcardImport:
     # Specified by editorconfig and enforced by ktlint
@@ -200,15 +223,6 @@ style:
     # We usually catch these in code review, and more often than not, the constants aren't very magical
     active: false
 
-libraries:
-  active: true
-  ForbiddenPublicDataClass:
+performance:
+  UnnecessaryPartOfBinaryExpression:
     active: true
-    excludes: [ '**' ]
-    ignorePackages: [ '*.internal', '*.internal.*' ]
-  LibraryCodeMustSpecifyReturnType:
-    # Enforced by the compiler
-    active: false
-  LibraryEntitiesShouldNotBePublic:
-    # Enforced by the compiler
-    active: false

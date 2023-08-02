@@ -50,7 +50,7 @@ class EnforceStaticImportTest {
             """
 
         val findings = EnforceStaticImport(
-            TestConfig(mapOf(METHODS to listOf("java.lang.Math.floor", "kotlin.io.print"))),
+            TestConfig(Pair(METHODS, listOf("java.lang.Math.floor", "kotlin.io.print"))),
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings)
@@ -74,8 +74,9 @@ class EnforceStaticImportTest {
 
         val findings = EnforceStaticImport(
             TestConfig(
-                mapOf(
-                    METHODS to listOf(
+                Pair(
+                    METHODS,
+                    listOf(
                         "com.google.common.truth.Truth.assertThat",
                         "org.junit.jupiter.params.provider.Arguments.arguments",
                     ),
@@ -100,7 +101,7 @@ class EnforceStaticImportTest {
             """
 
         val findings = EnforceStaticImport(
-            TestConfig(mapOf(METHODS to listOf("java.lang.Math.floor"))),
+            TestConfig(Pair(METHODS, listOf("java.lang.Math.floor"))),
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings)
@@ -119,7 +120,7 @@ class EnforceStaticImportTest {
             """
 
         val findings = EnforceStaticImport(
-            TestConfig(mapOf(METHODS to "java.lang.Math.floor, java.lang.System.gc")),
+            TestConfig(Pair(METHODS, "java.lang.Math.floor, java.lang.System.gc")),
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings).hasSize(2)
@@ -140,7 +141,7 @@ class EnforceStaticImportTest {
             """
 
         val findings = EnforceStaticImport(
-            TestConfig(mapOf(METHODS to listOf("java.time.LocalDate.now"))),
+            TestConfig(Pair(METHODS, listOf("java.time.LocalDate.now"))),
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings).hasSize(2)
@@ -161,7 +162,7 @@ class EnforceStaticImportTest {
             """
 
         val findings = EnforceStaticImport(
-            TestConfig(mapOf(METHODS to listOf("java.time.LocalDate.now()"))),
+            TestConfig(Pair(METHODS, listOf("java.time.LocalDate.now()"))),
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings)
@@ -180,7 +181,7 @@ class EnforceStaticImportTest {
             """
 
         val findings = EnforceStaticImport(
-            TestConfig(mapOf(METHODS to listOf("java.time.LocalDate.now(java.time.Clock)"))),
+            TestConfig(Pair(METHODS, listOf("java.time.LocalDate.now(java.time.Clock)"))),
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings)
@@ -196,7 +197,7 @@ class EnforceStaticImportTest {
             """
 
         val findings = EnforceStaticImport(
-            TestConfig(mapOf(METHODS to listOf("java.time.LocalDate.of(kotlin.Int, kotlin.Int, kotlin.Int)"))),
+            TestConfig(Pair(METHODS, listOf("java.time.LocalDate.of(kotlin.Int, kotlin.Int, kotlin.Int)"))),
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings)
@@ -225,7 +226,7 @@ class EnforceStaticImportTest {
             """
 
         val findings = EnforceStaticImport(
-            TestConfig(mapOf(METHODS to listOf("com.pkware.test.Example.Companion.`some, test`()"))),
+            TestConfig(Pair(METHODS, listOf("com.pkware.test.Example.Companion.`some, test`()"))),
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings).hasSize(2)
@@ -257,8 +258,9 @@ class EnforceStaticImportTest {
 
         val findings = EnforceStaticImport(
             TestConfig(
-                mapOf(
-                    METHODS to listOf(
+                Pair(
+                    METHODS,
+                    listOf(
                         "com.pkware.test.Example.Companion.defaultParamsMethod(kotlin.String,kotlin.Int)",
                     ),
                 ),
@@ -283,7 +285,7 @@ class EnforceStaticImportTest {
             """
 
         val findings = EnforceStaticImport(
-            TestConfig(mapOf(METHODS to "  ")),
+            TestConfig(Pair(METHODS, "  ")),
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings).isEmpty()
@@ -299,7 +301,7 @@ class EnforceStaticImportTest {
             """
 
         val findings = EnforceStaticImport(
-            TestConfig(mapOf(METHODS to listOf("java.lang.System.gc"))),
+            TestConfig(Pair(METHODS, listOf("java.lang.System.gc"))),
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings).isEmpty()
