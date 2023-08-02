@@ -1,10 +1,11 @@
 import io.gitlab.arturbosch.detekt.Detekt
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(libs.plugins.ktlint) apply false
     alias(libs.plugins.detekt)
-    kotlin("jvm") version "1.7.21" apply false
+    kotlin("jvm") version "1.8.22" apply false
 }
 
 subprojects {
@@ -18,19 +19,21 @@ subprojects {
         isReproducibleFileOrder = true
     }
 
-    val kotlinJvmTarget = "1.8"
+    tasks.withType<KotlinCompile>().configureEach {
+        compilerOptions {
 
-    tasks.withType<KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = kotlinJvmTarget
-            freeCompilerArgs = listOf(
+            jvmTarget.set(JvmTarget.JVM_1_8)
+
+            freeCompilerArgs.addAll(
                 "-Xjvm-default=all",
-                "-Xopt-in=kotlin.RequiresOptIn",
+                "-Xinline-classes",
+                "-opt-in=kotlin.contracts.ExperimentalContracts",
                 "-Xjsr305=strict",
 
                 // Ensure assertions don't add performance cost. See https://youtrack.jetbrains.com/issue/KT-22292
                 "-Xassertions=jvm"
             )
+
         }
     }
 
@@ -43,13 +46,10 @@ subprojects {
 
     dependencies {
         detektPlugins(project(":import-extension"))
-        // Work around to get libs.detekt.rules.libraries in subprojects:
-        // see https://github.com/gradle/gradle/issues/16634
-        detektPlugins(rootProject.libs.detekt.rules.libraries)
     }
 
     tasks.withType<Detekt>().configureEach {
-        jvmTarget = kotlinJvmTarget
+        jvmTarget = tasks.named<KotlinCompile>("compileKotlin").get().compilerOptions.jvmTarget.get().target
         parallel = true
         config.from(rootProject.file("detekt.yml"))
         buildUponDefaultConfig = true

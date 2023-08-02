@@ -27,6 +27,10 @@ dependencies {
     testRuntimeOnly(libs.junit.jupiter.engine)
 }
 
+kotlin {
+    jvmToolchain { languageVersion.set(JavaLanguageVersion.of(8)) }
+}
+
 // <editor-fold desc="Publishing and Signing">
 
 java {
