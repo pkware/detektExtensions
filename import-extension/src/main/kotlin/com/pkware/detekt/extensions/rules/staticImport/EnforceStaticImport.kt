@@ -35,7 +35,7 @@ class EnforceStaticImport(config: Config = Config.empty) : Rule(config) {
         javaClass.simpleName,
         Severity.Style,
         "Method should be imported statically.",
-        Debt.TEN_MINS
+        Debt.TEN_MINS,
     )
 
     @Configuration(
@@ -43,11 +43,9 @@ class EnforceStaticImport(config: Config = Config.empty) : Rule(config) {
             "Methods can be defined without full signature (i.e. `com.google.common.truth.Truth.assertThat`) which " +
             "will report calls of all methods with this name or with full signature " +
             "(i.e. `com.google.common.truth.Truth.assertThat(java.lang.String)`) which would only report method " +
-            "calls with this concrete signature."
+            "calls with this concrete signature.",
     )
-    private val methods: List<FunctionMatcher> by config(
-        listOf("")
-    ) { it.map(FunctionMatcher::fromFunctionSignature) }
+    private val methods: List<FunctionMatcher> by config(listOf("")) { it.map(FunctionMatcher::fromFunctionSignature) }
 
     /**
      * A call expression is triggered for a method and/or function call.
