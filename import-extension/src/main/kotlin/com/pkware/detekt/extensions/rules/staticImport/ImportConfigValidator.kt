@@ -41,5 +41,5 @@ class ImportConfigValidator : ConfigValidator {
  */
 class Message(
     override val message: String,
-    override val level: Notification.Level = Notification.Level.Error
+    override val level: Notification.Level = Notification.Level.Error,
 ) : Notification

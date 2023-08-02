@@ -28,8 +28,8 @@ class EnforceStaticImportTest {
         wrapper = createEnvironment(
             additionalRootPaths = listOf(
                 File(Truth::class.java.protectionDomain.codeSource.location.path),
-                File(Arguments::class.java.protectionDomain.codeSource.location.path)
-            )
+                File(Arguments::class.java.protectionDomain.codeSource.location.path),
+            ),
         )
         env = wrapper.env
     }
@@ -41,7 +41,6 @@ class EnforceStaticImportTest {
 
     @Test
     fun `rule report based on custom configuration`() {
-
         val code = """
             fun main() {
                 val value = 3.3
@@ -51,7 +50,7 @@ class EnforceStaticImportTest {
             """
 
         val findings = EnforceStaticImport(
-            TestConfig(mapOf(METHODS to listOf("java.lang.Math.floor", "kotlin.io.print")))
+            TestConfig(mapOf(METHODS to listOf("java.lang.Math.floor", "kotlin.io.print"))),
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings)
@@ -61,7 +60,6 @@ class EnforceStaticImportTest {
 
     @Test
     fun `rule report truth and arguments`() {
-
         val code = """
             import com.google.common.truth.Truth
             import com.google.common.truth.Truth.assertThat
@@ -79,22 +77,21 @@ class EnforceStaticImportTest {
                 mapOf(
                     METHODS to listOf(
                         "com.google.common.truth.Truth.assertThat",
-                        "org.junit.jupiter.params.provider.Arguments.arguments"
-                    )
-                )
-            )
+                        "org.junit.jupiter.params.provider.Arguments.arguments",
+                    ),
+                ),
+            ),
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings).hasSize(2)
         assertThat(findings).hasStartSourceLocations(
             SourceLocation(7, 23),
-            SourceLocation(9, 38)
+            SourceLocation(9, 38),
         )
     }
 
     @Test
     fun `rule report with called methods using their fully qualified names`() {
-
         val code = """
             fun main() {
                 var value = 3.54
@@ -103,7 +100,7 @@ class EnforceStaticImportTest {
             """
 
         val findings = EnforceStaticImport(
-            TestConfig(mapOf(METHODS to listOf("java.lang.Math.floor")))
+            TestConfig(mapOf(METHODS to listOf("java.lang.Math.floor"))),
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings)
@@ -113,7 +110,6 @@ class EnforceStaticImportTest {
 
     @Test
     fun `rule report with multiple different methods when config is a string`() {
-
         val code = """
             fun main() {
                 value = 3.7
@@ -123,19 +119,18 @@ class EnforceStaticImportTest {
             """
 
         val findings = EnforceStaticImport(
-            TestConfig(mapOf(METHODS to "java.lang.Math.floor, java.lang.System.gc"))
+            TestConfig(mapOf(METHODS to "java.lang.Math.floor, java.lang.System.gc")),
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings).hasSize(2)
         assertThat(findings).hasStartSourceLocations(
             SourceLocation(4, 30),
-            SourceLocation(5, 24)
+            SourceLocation(5, 24),
         )
     }
 
     @Test
     fun `rule report both methods that do and do not use full signature`() {
-
         val code = """
             import java.time.Clock
             import java.time.LocalDate
@@ -145,19 +140,18 @@ class EnforceStaticImportTest {
             """
 
         val findings = EnforceStaticImport(
-            TestConfig(mapOf(METHODS to listOf("java.time.LocalDate.now")))
+            TestConfig(mapOf(METHODS to listOf("java.time.LocalDate.now"))),
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings).hasSize(2)
         assertThat(findings).hasStartSourceLocations(
             SourceLocation(5, 34),
-            SourceLocation(6, 35)
+            SourceLocation(6, 35),
         )
     }
 
     @Test
     fun `rule report parameterless method when full signature matches`() {
-
         val code = """
                 import java.time.Clock
                 import java.time.LocalDate
@@ -167,7 +161,7 @@ class EnforceStaticImportTest {
             """
 
         val findings = EnforceStaticImport(
-            TestConfig(mapOf(METHODS to listOf("java.time.LocalDate.now()")))
+            TestConfig(mapOf(METHODS to listOf("java.time.LocalDate.now()"))),
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings)
@@ -177,7 +171,6 @@ class EnforceStaticImportTest {
 
     @Test
     fun `rule report method with parameter when full signature matches`() {
-
         val code = """
                 import java.time.Clock
                 import java.time.LocalDate
@@ -187,7 +180,7 @@ class EnforceStaticImportTest {
             """
 
         val findings = EnforceStaticImport(
-            TestConfig(mapOf(METHODS to listOf("java.time.LocalDate.now(java.time.Clock)")))
+            TestConfig(mapOf(METHODS to listOf("java.time.LocalDate.now(java.time.Clock)"))),
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings)
@@ -197,14 +190,13 @@ class EnforceStaticImportTest {
 
     @Test
     fun `rule report method with multiple parameters when full signature matches`() {
-
         val code = """
                 import java.time.LocalDate
                 val date = LocalDate.of(2020, 1, 1)
             """
 
         val findings = EnforceStaticImport(
-            TestConfig(mapOf(METHODS to listOf("java.time.LocalDate.of(kotlin.Int, kotlin.Int, kotlin.Int)")))
+            TestConfig(mapOf(METHODS to listOf("java.time.LocalDate.of(kotlin.Int, kotlin.Int, kotlin.Int)"))),
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings)
@@ -214,7 +206,6 @@ class EnforceStaticImportTest {
 
     @Test
     fun `rule report method with spaces and commas`() {
-
         val code = """
                 package com.pkware.test
 
@@ -234,7 +225,7 @@ class EnforceStaticImportTest {
             """
 
         val findings = EnforceStaticImport(
-            TestConfig(mapOf(METHODS to listOf("com.pkware.test.Example.Companion.`some, test`()")))
+            TestConfig(mapOf(METHODS to listOf("com.pkware.test.Example.Companion.`some, test`()"))),
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings).hasSize(2)
@@ -246,7 +237,6 @@ class EnforceStaticImportTest {
 
     @Test
     fun `rule report method with default parameters`() {
-
         val code = """
                 package com.pkware.test
 
@@ -269,10 +259,10 @@ class EnforceStaticImportTest {
             TestConfig(
                 mapOf(
                     METHODS to listOf(
-                        "com.pkware.test.Example.Companion.defaultParamsMethod(kotlin.String,kotlin.Int)"
-                    )
-                )
-            )
+                        "com.pkware.test.Example.Companion.defaultParamsMethod(kotlin.String,kotlin.Int)",
+                    ),
+                ),
+            ),
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings).hasSize(2)
@@ -284,7 +274,6 @@ class EnforceStaticImportTest {
 
     @Test
     fun `no rule report if configuration methods are blank`() {
-
         val code = """
             fun main() {
                 value = 3.7
@@ -294,7 +283,7 @@ class EnforceStaticImportTest {
             """
 
         val findings = EnforceStaticImport(
-            TestConfig(mapOf(METHODS to "  "))
+            TestConfig(mapOf(METHODS to "  ")),
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings).isEmpty()
@@ -302,7 +291,6 @@ class EnforceStaticImportTest {
 
     @Test
     fun `no rule report if called methods do not match configuration methods`() {
-
         val code = """
             import java.lang.System
             fun main() {
@@ -311,7 +299,7 @@ class EnforceStaticImportTest {
             """
 
         val findings = EnforceStaticImport(
-            TestConfig(mapOf(METHODS to listOf("java.lang.System.gc")))
+            TestConfig(mapOf(METHODS to listOf("java.lang.System.gc"))),
         ).compileAndLintWithContext(env, code)
 
         assertThat(findings).isEmpty()
