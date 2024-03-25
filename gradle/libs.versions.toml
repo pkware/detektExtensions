@@ -1,6 +1,6 @@
 [versions]
 junitVersion = "5.10.0"
-detektVersion = "1.23.1"
+detektVersion = "1.23.6"
 kspVersion = "1.8.22-1.0.11"
 ktlintVersion = "11.5.0"
 
