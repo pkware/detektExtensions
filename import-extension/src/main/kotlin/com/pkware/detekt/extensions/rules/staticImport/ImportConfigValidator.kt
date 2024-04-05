@@ -22,7 +22,6 @@ import io.gitlab.arturbosch.detekt.api.Notification
  */
 @AutoService(ConfigValidator::class)
 class ImportConfigValidator : ConfigValidator {
-
     override fun validate(config: Config): Collection<Notification> {
         val result = mutableListOf<Notification>()
         try {
