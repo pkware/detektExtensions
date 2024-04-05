@@ -94,17 +94,18 @@ val String.isReleaseBuild
     get() = !contains("SNAPSHOT")
 
 val Project.releaseRepositoryUrl: String
-    get() = properties.getOrDefault(
-        "RELEASE_REPOSITORY_URL",
-
-        "https://oss.sonatype.org/service/local/staging/deploy/maven2",
-    ).toString()
+    get() =
+        properties.getOrDefault(
+            "RELEASE_REPOSITORY_URL",
+            "https://oss.sonatype.org/service/local/staging/deploy/maven2",
+        ).toString()
 
 val Project.snapshotRepositoryUrl: String
-    get() = properties.getOrDefault(
-        "SNAPSHOT_REPOSITORY_URL",
-        "https://oss.sonatype.org/content/repositories/snapshots",
-    ).toString()
+    get() =
+        properties.getOrDefault(
+            "SNAPSHOT_REPOSITORY_URL",
+            "https://oss.sonatype.org/content/repositories/snapshots",
+        ).toString()
 
 val Project.repositoryUsername: String
     get() = properties.getOrDefault("NEXUS_USERNAME", "").toString()

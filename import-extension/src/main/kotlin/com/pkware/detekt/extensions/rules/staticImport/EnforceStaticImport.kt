@@ -30,13 +30,13 @@ import org.jetbrains.kotlin.resolve.calls.util.getResolvedCall
  */
 @RequiresTypeResolution
 class EnforceStaticImport(config: Config = Config.empty) : Rule(config) {
-
-    override val issue = Issue(
-        javaClass.simpleName,
-        Severity.Style,
-        "Method should be imported statically.",
-        Debt.TEN_MINS,
-    )
+    override val issue =
+        Issue(
+            javaClass.simpleName,
+            Severity.Style,
+            "Method should be imported statically.",
+            Debt.TEN_MINS,
+        )
 
     @Configuration(
         "Comma separated list of fully qualified method signatures which should be statically imported. " +
@@ -73,9 +73,10 @@ class EnforceStaticImport(config: Config = Config.empty) : Rule(config) {
         val isStaticImport = resolvedCall.call.explicitReceiver == null
         if (isStaticImport) return
 
-        val descriptors = resolvedCall.resultingDescriptor.let {
-            listOf(it) + it.overriddenDescriptors
-        }
+        val descriptors =
+            resolvedCall.resultingDescriptor.let {
+                listOf(it) + it.overriddenDescriptors
+            }
 
         for (descriptor in descriptors) {
             methods.find { it.match(descriptor) }?.let { functionMatcher ->

@@ -11,7 +11,6 @@ import io.gitlab.arturbosch.detekt.api.RuleSetProvider
  */
 @AutoService(RuleSetProvider::class)
 class ImportExtensionProvider : RuleSetProvider {
-
     override val ruleSetId: String = "import"
 
     override fun instance(config: Config): RuleSet = RuleSet(ruleSetId, listOf(EnforceStaticImport(config)))
