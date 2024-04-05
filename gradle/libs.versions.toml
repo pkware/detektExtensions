@@ -1,7 +1,7 @@
 [versions]
 junitVersion = "5.10.2"
 detektVersion = "1.23.6"
-kspVersion = "1.8.22-1.0.11"
+kspVersion = "1.9.23-1.0.20"
 ktlintVersion = "11.5.0"
 
 [libraries]
