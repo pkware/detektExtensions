@@ -13,7 +13,7 @@ junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", vers
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junitVersion" }
 assertj = "org.assertj:assertj-core:3.25.3" # detekt.test dependency for findings asserts
 truth = "com.google.truth:truth:1.4.3"
-auto-service-ksp = "dev.zacsweers.autoservice:auto-service-ksp:1.1.0"
+auto-service-ksp = "dev.zacsweers.autoservice:auto-service-ksp:1.2.0"
 auto-service-annotations = "com.google.auto.service:auto-service-annotations:1.1.1"
 
 [plugins]
