@@ -12,7 +12,7 @@ detekt-parser = { module = "io.gitlab.arturbosch.detekt:detekt-parser", version.
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junitVersion" }
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junitVersion" }
 assertj = "org.assertj:assertj-core:3.26.0" # detekt.test dependency for findings asserts
-truth = "com.google.truth:truth:1.4.3"
+truth = "com.google.truth:truth:1.4.4"
 auto-service-ksp = "dev.zacsweers.autoservice:auto-service-ksp:1.2.0"
 auto-service-annotations = "com.google.auto.service:auto-service-annotations:1.1.1"
 
