@@ -2,7 +2,7 @@
 junitVersion = "5.11.0"
 detektVersion = "1.23.8"
 kspVersion = "1.9.23-1.0.20"
-ktlintVersion = "12.1.1"
+ktlintVersion = "12.3.0"
 
 [libraries]
 detekt-tooling = { module = "io.gitlab.arturbosch.detekt:detekt-tooling", version.ref = "detektVersion" }
