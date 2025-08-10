@@ -28,10 +28,10 @@ class EnforceStaticImportTest {
         wrapper =
             createEnvironment(
                 additionalRootPaths =
-                    listOf(
-                        File(Truth::class.java.protectionDomain.codeSource.location.path),
-                        File(Arguments::class.java.protectionDomain.codeSource.location.path),
-                    ),
+                listOf(
+                    File(Truth::class.java.protectionDomain.codeSource.location.path),
+                    File(Arguments::class.java.protectionDomain.codeSource.location.path),
+                ),
             )
         env = wrapper.env
     }

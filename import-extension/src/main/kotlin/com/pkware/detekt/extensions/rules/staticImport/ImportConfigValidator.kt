@@ -38,7 +38,5 @@ class ImportConfigValidator : ConfigValidator {
 /**
  * Provides a message string and a notification level for the detekt linter.
  */
-class Message(
-    override val message: String,
-    override val level: Notification.Level = Notification.Level.Error,
-) : Notification
+class Message(override val message: String, override val level: Notification.Level = Notification.Level.Error) :
+    Notification
