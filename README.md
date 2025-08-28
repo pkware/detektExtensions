@@ -63,11 +63,8 @@ line.
 6. Merge the release PR after approval, tag the commit on the main branch with
 `git tag -a X.Y.Z -m "X.Y.Z"`(X.Y.Z is the new version).
 7. Run `git push --tags`.
-8. Run `./gradlew publish` in the terminal or command line.
-9. Visit [Sonatype Nexus](https://oss.sonatype.org/) and promote the artifact.
-10. Update `gradle.properties` to the next SNAPSHOT version.
-11. Run `git commit -am "Prepare next development version."`
-12. Make a PR with your changes.
-13. Merge the next version PR after approval.
-
-If step 8 or 9 fails, drop the Sonatype repo, fix the problem, commit, and start again at step 8.
+8. Visit [Sonatype Nexus](https://central.sonatype.com/) and promote the artifact.
+9. Update `gradle.properties` to the next SNAPSHOT version.
+10. Run `git commit -am "Prepare next development version."`
+11. Make a PR with your changes.
+12. Merge the next version PR after approval.
