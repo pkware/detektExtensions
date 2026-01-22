@@ -1,0 +1,6 @@
+# Example detekt configuration for using the Micronaut extension
+
+micronaut:
+  active: true
+  RequireSecuredAnnotation:
+    active: true
