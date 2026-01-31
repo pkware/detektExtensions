@@ -1,5 +1,6 @@
 include(
-    "import-extension"
+    "import-extension",
+    "micronaut-extension"
 )
 
 rootProject.name = "DetektExtensions"
