@@ -7,17 +7,18 @@ import io.gitlab.arturbosch.detekt.api.Entity
 import io.gitlab.arturbosch.detekt.api.Issue
 import io.gitlab.arturbosch.detekt.api.Rule
 import io.gitlab.arturbosch.detekt.api.Severity
+import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtNamedFunction
 
 /**
  * This detekt rule ensures that all Micronaut controller endpoint methods have security annotations.
  *
- * Micronaut HTTP endpoint methods (those annotated with @Get, @Post, @Put, @Delete, @Patch, @Head,
- * @Options, or @Trace) must have one of the following security annotations:
- * - @Secured (io.micronaut.security.annotation.Secured)
- * - @PermitAll (jakarta.annotation.security.PermitAll)
- * - @RolesAllowed (jakarta.annotation.security.RolesAllowed)
- * - @DenyAll (jakarta.annotation.security.DenyAll)
+ * Micronaut HTTP endpoint methods (those annotated with `@Get`, `@Post`, `@Put`, `@Delete`, `@Patch`, `@Head`,
+ * `@Options`, or `@Trace`) must have one of the following security annotations:
+ * - `@Secured` (io.micronaut.security.annotation.Secured)
+ * - `@PermitAll` (jakarta.annotation.security.PermitAll)
+ * - `@RolesAllowed` (jakarta.annotation.security.RolesAllowed)
+ * - `@DenyAll` (jakarta.annotation.security.DenyAll)
  *
  * This helps prevent accidentally creating unsecured endpoints that could expose sensitive data or operations.
  *
@@ -60,15 +61,20 @@ class RequireSecuredAnnotation(config: Config = Config.empty) : Rule(config) {
     override fun visitNamedFunction(function: KtNamedFunction) {
         super.visitNamedFunction(function)
 
+        // Only check methods inside @Controller classes — HTTP method annotations are also
+        // used on @Client interfaces where security annotations are not applicable.
+        val containingClass = function.parent?.parent as? KtClassOrObject ?: return
+        val isController = containingClass.annotationEntries.any { annotation ->
+            annotation.shortName?.identifier == "Controller"
+        }
+        if (!isController) return
+
         // Check if this function is a Micronaut endpoint (has an HTTP method annotation)
         val hasHttpMethodAnnotation = function.annotationEntries.any { annotation ->
             annotation.shortName?.identifier in httpMethodAnnotations
         }
 
-        if (!hasHttpMethodAnnotation) {
-            // Not an endpoint method, no need to check for security annotations
-            return
-        }
+        if (!hasHttpMethodAnnotation) return
 
         // Check if the function has a security annotation
         val hasSecurityAnnotation = function.annotationEntries.any { annotation ->
