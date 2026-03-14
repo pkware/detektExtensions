@@ -25,6 +25,7 @@ dependencies {
     testImplementation(libs.assertj)
 
     testRuntimeOnly(libs.junit.jupiter.engine)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 kotlin {
