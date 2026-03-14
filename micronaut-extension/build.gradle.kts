@@ -27,7 +27,7 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain { languageVersion.set(JavaLanguageVersion.of(8)) }
+    jvmToolchain { languageVersion.set(JavaLanguageVersion.of(21)) }
 }
 
 // <editor-fold desc="Publishing and Signing">
