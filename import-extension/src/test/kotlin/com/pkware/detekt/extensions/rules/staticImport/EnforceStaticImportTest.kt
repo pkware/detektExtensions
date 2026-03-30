@@ -1,51 +1,30 @@
 package com.pkware.detekt.extensions.rules.staticImport
 
-import com.google.common.truth.Truth
-import io.github.detekt.test.utils.KotlinCoreEnvironmentWrapper
-import io.github.detekt.test.utils.createEnvironment
-import io.gitlab.arturbosch.detekt.api.SourceLocation
-import io.gitlab.arturbosch.detekt.test.TestConfig
-import io.gitlab.arturbosch.detekt.test.assertThat
-import io.gitlab.arturbosch.detekt.test.compileAndLintWithContext
-import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
-import org.junit.jupiter.api.AfterEach
+import com.google.common.truth.Truth.assertThat
+import dev.detekt.api.SourceLocation
+import dev.detekt.test.TestConfig
+import dev.detekt.test.lintWithContext
+import dev.detekt.test.location
+import dev.detekt.test.utils.KotlinEnvironmentContainer
+import dev.detekt.test.utils.createEnvironment
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.params.provider.Arguments
-import java.io.File
 
 private const val METHODS = "methods"
 
 class EnforceStaticImportTest {
-    private lateinit var wrapper: KotlinCoreEnvironmentWrapper
-    private lateinit var env: KotlinCoreEnvironment
+    private lateinit var env: KotlinEnvironmentContainer
 
-    // We need to set up a custom KotlinCoreEnvironment and add the Truth and Arguments class paths to that environment,
-    // so they are available to generate the BindingContext for detekt rules under test with the
-    // EnforceStaticImportExtension.
     @BeforeEach
     fun setUp() {
-        wrapper =
-            createEnvironment(
-                additionalRootPaths =
-                listOf(
-                    File(Truth::class.java.protectionDomain.codeSource.location.path),
-                    File(Arguments::class.java.protectionDomain.codeSource.location.path),
-                ),
-            )
-        env = wrapper.env
-    }
-
-    @AfterEach
-    fun tearDown() {
-        wrapper.dispose()
+        env = createEnvironment()
     }
 
     @Test
     fun `rule report based on custom configuration`() {
         val code = """
             fun main() {
-                val value = 3.3
+                var value = 3.3
                 value = Math.floor(value)
                 print("3")
             }
@@ -54,24 +33,21 @@ class EnforceStaticImportTest {
         val findings =
             EnforceStaticImport(
                 TestConfig(Pair(METHODS, listOf("java.lang.Math.floor", "kotlin.io.print"))),
-            ).compileAndLintWithContext(env, code)
+            ).lintWithContext(env, code)
 
-        assertThat(findings)
-            .hasSize(1)
-            .hasStartSourceLocation(4, 30)
+        assertThat(findings).hasSize(1)
+        assertThat(findings[0].location.source).isEqualTo(SourceLocation(4, 30))
     }
 
     @Test
-    fun `rule report truth and arguments`() {
+    fun `rule report with multiple equivalent static import methods`() {
         val code = """
-            import com.google.common.truth.Truth
-            import com.google.common.truth.Truth.assertThat
-            import org.junit.jupiter.params.provider.Arguments
+            import java.lang.Math.floor
             fun main() {
-                val value = 3
-                Truth.assertThat(value).isEqualTo(3)
-                assertThat(value).isNotEqualTo(4)
-                val args = Arguments.arguments("test", "test2")
+                val value = 3.0
+                Math.floor(value)
+                floor(value)
+                java.time.LocalDate.now()
             }
             """
 
@@ -81,17 +57,17 @@ class EnforceStaticImportTest {
                     Pair(
                         METHODS,
                         listOf(
-                            "com.google.common.truth.Truth.assertThat",
-                            "org.junit.jupiter.params.provider.Arguments.arguments",
+                            "java.lang.Math.floor",
+                            "java.time.LocalDate.now",
                         ),
                     ),
                 ),
-            ).compileAndLintWithContext(env, code)
+            ).lintWithContext(env, code)
 
         assertThat(findings).hasSize(2)
-        assertThat(findings).hasStartSourceLocations(
-            SourceLocation(7, 23),
-            SourceLocation(9, 38),
+        assertThat(findings.map { it.location.source }).containsExactly(
+            SourceLocation(5, 22),
+            SourceLocation(7, 37),
         )
     }
 
@@ -107,18 +83,17 @@ class EnforceStaticImportTest {
         val findings =
             EnforceStaticImport(
                 TestConfig(Pair(METHODS, listOf("java.lang.Math.floor"))),
-            ).compileAndLintWithContext(env, code)
+            ).lintWithContext(env, code)
 
-        assertThat(findings)
-            .hasSize(1)
-            .hasStartSourceLocation(4, 40)
+        assertThat(findings).hasSize(1)
+        assertThat(findings[0].location.source).isEqualTo(SourceLocation(4, 40))
     }
 
     @Test
-    fun `rule report with multiple different methods when config is a string`() {
+    fun `rule report with multiple different methods`() {
         val code = """
             fun main() {
-                value = 3.7
+                var value = 3.7
                 value = Math.floor(value)
                 System.gc()
             }
@@ -126,11 +101,11 @@ class EnforceStaticImportTest {
 
         val findings =
             EnforceStaticImport(
-                TestConfig(Pair(METHODS, "java.lang.Math.floor, java.lang.System.gc")),
-            ).compileAndLintWithContext(env, code)
+                TestConfig(Pair(METHODS, listOf("java.lang.Math.floor", "java.lang.System.gc"))),
+            ).lintWithContext(env, code)
 
         assertThat(findings).hasSize(2)
-        assertThat(findings).hasStartSourceLocations(
+        assertThat(findings.map { it.location.source }).containsExactly(
             SourceLocation(4, 30),
             SourceLocation(5, 24),
         )
@@ -149,10 +124,10 @@ class EnforceStaticImportTest {
         val findings =
             EnforceStaticImport(
                 TestConfig(Pair(METHODS, listOf("java.time.LocalDate.now"))),
-            ).compileAndLintWithContext(env, code)
+            ).lintWithContext(env, code)
 
         assertThat(findings).hasSize(2)
-        assertThat(findings).hasStartSourceLocations(
+        assertThat(findings.map { it.location.source }).containsExactly(
             SourceLocation(5, 34),
             SourceLocation(6, 35),
         )
@@ -171,11 +146,10 @@ class EnforceStaticImportTest {
         val findings =
             EnforceStaticImport(
                 TestConfig(Pair(METHODS, listOf("java.time.LocalDate.now()"))),
-            ).compileAndLintWithContext(env, code)
+            ).lintWithContext(env, code)
 
-        assertThat(findings)
-            .hasSize(1)
-            .hasStartSourceLocation(5, 38)
+        assertThat(findings).hasSize(1)
+        assertThat(findings[0].location.source).isEqualTo(SourceLocation(5, 38))
     }
 
     @Test
@@ -191,11 +165,10 @@ class EnforceStaticImportTest {
         val findings =
             EnforceStaticImport(
                 TestConfig(Pair(METHODS, listOf("java.time.LocalDate.now(java.time.Clock)"))),
-            ).compileAndLintWithContext(env, code)
+            ).lintWithContext(env, code)
 
-        assertThat(findings)
-            .hasSize(1)
-            .hasStartSourceLocation(6, 39)
+        assertThat(findings).hasSize(1)
+        assertThat(findings[0].location.source).isEqualTo(SourceLocation(6, 39))
     }
 
     @Test
@@ -208,11 +181,10 @@ class EnforceStaticImportTest {
         val findings =
             EnforceStaticImport(
                 TestConfig(Pair(METHODS, listOf("java.time.LocalDate.of(kotlin.Int, kotlin.Int, kotlin.Int)"))),
-            ).compileAndLintWithContext(env, code)
+            ).lintWithContext(env, code)
 
-        assertThat(findings)
-            .hasSize(1)
-            .hasStartSourceLocation(3, 38)
+        assertThat(findings).hasSize(1)
+        assertThat(findings[0].location.source).isEqualTo(SourceLocation(3, 38))
     }
 
     @Test
@@ -238,10 +210,10 @@ class EnforceStaticImportTest {
         val findings =
             EnforceStaticImport(
                 TestConfig(Pair(METHODS, listOf("com.pkware.test.Example.Companion.`some, test`()"))),
-            ).compileAndLintWithContext(env, code)
+            ).lintWithContext(env, code)
 
         assertThat(findings).hasSize(2)
-        assertThat(findings).hasStartSourceLocations(
+        assertThat(findings.map { it.location.source }).containsExactly(
             SourceLocation(14, 38),
             SourceLocation(15, 48),
         )
@@ -277,10 +249,10 @@ class EnforceStaticImportTest {
                         ),
                     ),
                 ),
-            ).compileAndLintWithContext(env, code)
+            ).lintWithContext(env, code)
 
         assertThat(findings).hasSize(2)
-        assertThat(findings).hasStartSourceLocations(
+        assertThat(findings.map { it.location.source }).containsExactly(
             SourceLocation(14, 38),
             SourceLocation(15, 48),
         )
@@ -290,7 +262,7 @@ class EnforceStaticImportTest {
     fun `no rule report if configuration methods are blank`() {
         val code = """
             fun main() {
-                value = 3.7
+                var value = 3.7
                 value = Math.floor(value)
                 print("3")
             }
@@ -298,8 +270,8 @@ class EnforceStaticImportTest {
 
         val findings =
             EnforceStaticImport(
-                TestConfig(Pair(METHODS, "  ")),
-            ).compileAndLintWithContext(env, code)
+                TestConfig(Pair(METHODS, listOf("  "))),
+            ).lintWithContext(env, code)
 
         assertThat(findings).isEmpty()
     }
@@ -316,7 +288,7 @@ class EnforceStaticImportTest {
         val findings =
             EnforceStaticImport(
                 TestConfig(Pair(METHODS, listOf("java.lang.System.gc"))),
-            ).compileAndLintWithContext(env, code)
+            ).lintWithContext(env, code)
 
         assertThat(findings).isEmpty()
     }

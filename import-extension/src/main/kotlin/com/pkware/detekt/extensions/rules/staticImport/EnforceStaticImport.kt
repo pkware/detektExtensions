@@ -1,20 +1,20 @@
 package com.pkware.detekt.extensions.rules.staticImport
 
-import io.github.detekt.tooling.api.FunctionMatcher
-import io.gitlab.arturbosch.detekt.api.CodeSmell
-import io.gitlab.arturbosch.detekt.api.Config
-import io.gitlab.arturbosch.detekt.api.Debt
-import io.gitlab.arturbosch.detekt.api.Entity
-import io.gitlab.arturbosch.detekt.api.Issue
-import io.gitlab.arturbosch.detekt.api.Rule
-import io.gitlab.arturbosch.detekt.api.Severity
-import io.gitlab.arturbosch.detekt.api.config
-import io.gitlab.arturbosch.detekt.api.internal.Configuration
-import io.gitlab.arturbosch.detekt.api.internal.RequiresTypeResolution
+import dev.detekt.api.Config
+import dev.detekt.api.Configuration
+import dev.detekt.api.Entity
+import dev.detekt.api.Finding
+import dev.detekt.api.RequiresAnalysisApi
+import dev.detekt.api.Rule
+import dev.detekt.api.config
+import dev.detekt.psi.FunctionMatcher
+import org.jetbrains.kotlin.analysis.api.analyze
+import org.jetbrains.kotlin.analysis.api.resolution.singleFunctionCallOrNull
+import org.jetbrains.kotlin.analysis.api.resolution.symbol
+import org.jetbrains.kotlin.analysis.api.symbols.KaCallableSymbol
+import org.jetbrains.kotlin.analysis.api.symbols.KaNamedFunctionSymbol
 import org.jetbrains.kotlin.psi.KtCallExpression
-import org.jetbrains.kotlin.psi.KtExpression
-import org.jetbrains.kotlin.resolve.BindingContext
-import org.jetbrains.kotlin.resolve.calls.util.getResolvedCall
+import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 
 /**
  * This detekt extension rule allows to set a list of methods that should be statically imported. This can be used to
@@ -22,21 +22,15 @@ import org.jetbrains.kotlin.resolve.calls.util.getResolvedCall
  *
  * Detekt will then report all method invocations that that should be statically linked.
  *
- * This rule requires detekt to be run with a context defined for type resolution. This helps resolve incoming method
+ * This rule requires detekt to be run with type resolution enabled. This helps resolve incoming method
  * calls to be checked against the list of methods that should be statically imported.
  *
  * @param config The detekt configuration passed into this rule.
  * The configuration can override the default methods used here that should be statically linked
  */
-@RequiresTypeResolution
-class EnforceStaticImport(config: Config = Config.empty) : Rule(config) {
-    override val issue =
-        Issue(
-            javaClass.simpleName,
-            Severity.Style,
-            "Method should be imported statically.",
-            Debt.TEN_MINS,
-        )
+class EnforceStaticImport(config: Config = Config.empty) :
+    Rule(config, "Method should be imported statically."),
+    RequiresAnalysisApi {
 
     @Configuration(
         "Comma separated list of fully qualified method signatures which should be statically imported. " +
@@ -48,40 +42,24 @@ class EnforceStaticImport(config: Config = Config.empty) : Rule(config) {
     private val methods: List<FunctionMatcher> by config(listOf("")) { it.map(FunctionMatcher::fromFunctionSignature) }
 
     /**
-     * A call expression is triggered for a method and/or function call.
-     * @see <a href="https://kotlinlang.org/spec/expressions.html#call-and-property-access-expressions">https://kotlinlang.org/spec/expressions.html#call-and-property-access-expressions</a>
+     * A dot-qualified expression triggers for method calls with an explicit receiver (e.g. `Math.floor(x)`).
+     * We only report these — calls without an explicit receiver are already statically imported.
      */
-    override fun visitCallExpression(expression: KtCallExpression) {
-        super.visitCallExpression(expression)
-        check(expression)
-    }
+    override fun visitDotQualifiedExpression(expression: KtDotQualifiedExpression) {
+        super.visitDotQualifiedExpression(expression)
+        val callExpression = expression.selectorExpression as? KtCallExpression ?: return
 
-    /**
-     * Analyze an incoming [KtExpression] and generate a detekt code smell error if the expression's resolved method
-     * matches a method in our list that should be statically linked.
-     *
-     * This method will not detect any code smells if there is no binding context setup before it is called.
-     * @see EnforceStaticImport class definition
-     *
-     * @param expression The incoming [KtExpression] to analyze
-     */
-    private fun check(expression: KtExpression) {
-        if (bindingContext == BindingContext.EMPTY) return
+        analyze(callExpression) {
+            val symbol = callExpression.resolveToCall()?.singleFunctionCallOrNull()?.symbol ?: return@analyze
 
-        val resolvedCall = expression.getResolvedCall(bindingContext) ?: return
-
-        val isStaticImport = resolvedCall.call.explicitReceiver == null
-        if (isStaticImport) return
-
-        val descriptors =
-            resolvedCall.resultingDescriptor.let {
-                listOf(it) + it.overriddenDescriptors
+            val allSymbols: List<KaCallableSymbol> = buildList {
+                add(symbol)
+                if (symbol is KaNamedFunctionSymbol) addAll(symbol.allOverriddenSymbols.toList())
             }
 
-        for (descriptor in descriptors) {
-            methods.find { it.match(descriptor) }?.let { functionMatcher ->
-                val message = "$functionMatcher needs to be statically imported."
-                report(CodeSmell(issue, Entity.from(expression), message))
+            val matcher = allSymbols.firstNotNullOfOrNull { sym -> methods.find { it.match(sym) } }
+            if (matcher != null) {
+                report(Finding(Entity.from(callExpression), "$matcher needs to be statically imported."))
             }
         }
     }
