@@ -46,6 +46,7 @@ subprojects {
 
     dependencies {
         detektPlugins(project(":import-extension"))
+        detektPlugins(project(":micronaut-extension"))
     }
 
     tasks.withType<Detekt>().configureEach {
