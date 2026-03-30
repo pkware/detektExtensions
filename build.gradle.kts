@@ -1,4 +1,4 @@
-import io.gitlab.arturbosch.detekt.Detekt
+import dev.detekt.gradle.Detekt
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -10,7 +10,7 @@ plugins {
 
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
-    apply(plugin = "io.gitlab.arturbosch.detekt")
+    apply(plugin = "dev.detekt")
 
     group = "com.pkware.detekt"
 
@@ -49,10 +49,10 @@ subprojects {
     }
 
     tasks.withType<Detekt>().configureEach {
-        jvmTarget = tasks.named<KotlinCompile>("compileKotlin").get().compilerOptions.jvmTarget.get().target
-        parallel = true
+        jvmTarget.set("21")
+        parallel.set(true)
         config.from(rootProject.file("detekt.yml"))
-        buildUponDefaultConfig = true
+        buildUponDefaultConfig.set(true)
     }
 }
 

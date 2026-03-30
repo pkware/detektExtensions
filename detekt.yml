@@ -136,7 +136,7 @@ style:
     active: true
   ForbiddenImport:
     active: true
-    imports:
+    forbiddenImports:
       - 'org.junit.Assert'
       - 'org.junit.Test'
       - 'org.junit.Before'
@@ -144,7 +144,6 @@ style:
       - 'org.junit.After'
       - 'org.junit.AfterClass'
       - 'org.junit.jupiter.api.Assertions'
-    forbiddenPatterns: '(?:junit\.framework|org\.junit\.jupiter\.api\.Assertions)\.(?!assertThrows).+'
   ForbiddenComment:
     comments:
       - reason: 'Forbidden FIXME todo marker in comment, please fix the problem.'
@@ -183,11 +182,11 @@ style:
     active: true
   RedundantExplicitType:
     active: true
-  RedundantVisibilityModifierRule:
+  RedundantVisibilityModifier:
     active: false
   ReturnCount:
     active: false
-  SpacingBetweenPackageAndImports:
+  SpacingAfterPackageDeclaration:
     active: true
   UnderscoresInNumericLiterals:
     active: true
@@ -199,7 +198,7 @@ style:
     active: false
   UnnecessaryLet:
     active: true
-  UntilInsteadOfRangeTo:
+  RangeUntilInsteadOfRangeTo:
     active: true
   UseEmptyCounterpart:
     active: true
