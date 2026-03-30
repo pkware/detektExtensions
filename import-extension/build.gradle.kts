@@ -17,6 +17,7 @@ dependencies {
     implementation(libs.auto.service.annotations)
     implementation(libs.detekt.tooling)
     implementation(libs.detekt.api)
+    implementation(libs.detekt.psi.utils)
 
     testImplementation(libs.detekt.test)
     testImplementation(libs.detekt.parser)

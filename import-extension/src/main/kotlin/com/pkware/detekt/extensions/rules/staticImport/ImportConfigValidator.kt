@@ -1,10 +1,10 @@
 package com.pkware.detekt.extensions.rules.staticImport
 
 import com.google.auto.service.AutoService
-import io.gitlab.arturbosch.detekt.api.Config
-import io.gitlab.arturbosch.detekt.api.Config.InvalidConfigurationError
-import io.gitlab.arturbosch.detekt.api.ConfigValidator
-import io.gitlab.arturbosch.detekt.api.Notification
+import dev.detekt.api.Config
+import dev.detekt.api.Config.InvalidConfigurationError
+import dev.detekt.api.ConfigValidator
+import dev.detekt.api.Notification
 
 /**
  * Validates the config setup for the detekt custom import ruleset within detekt.yml.
@@ -22,21 +22,17 @@ import io.gitlab.arturbosch.detekt.api.Notification
  */
 @AutoService(ConfigValidator::class)
 class ImportConfigValidator : ConfigValidator {
+    override val id: String = "ImportConfigValidator"
+
     override fun validate(config: Config): Collection<Notification> {
         val result = mutableListOf<Notification>()
         try {
             config.subConfig("import")
                 .subConfig("EnforceStaticImport")
-                .valueOrNull<Boolean>("active")
+                .valueOrNull("active")
         } catch (expected: InvalidConfigurationError) {
-            result.add(Message("'active' property must be of type boolean."))
+            result.add(Notification("'active' property must be of type boolean.", Notification.Level.Error))
         }
         return result
     }
 }
-
-/**
- * Provides a message string and a notification level for the detekt linter.
- */
-class Message(override val message: String, override val level: Notification.Level = Notification.Level.Error) :
-    Notification

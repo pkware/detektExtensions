@@ -1,9 +1,10 @@
 package com.pkware.detekt.extensions.rules.staticImport
 
 import com.google.auto.service.AutoService
-import io.gitlab.arturbosch.detekt.api.Config
-import io.gitlab.arturbosch.detekt.api.RuleSet
-import io.gitlab.arturbosch.detekt.api.RuleSetProvider
+import dev.detekt.api.RuleName
+import dev.detekt.api.RuleSet
+import dev.detekt.api.RuleSetId
+import dev.detekt.api.RuleSetProvider
 
 /**
  * The import extension rule set provider for this detekt extension.
@@ -11,7 +12,8 @@ import io.gitlab.arturbosch.detekt.api.RuleSetProvider
  */
 @AutoService(RuleSetProvider::class)
 class ImportExtensionProvider : RuleSetProvider {
-    override val ruleSetId: String = "import"
+    override val ruleSetId: RuleSetId = RuleSetId("import")
 
-    override fun instance(config: Config): RuleSet = RuleSet(ruleSetId, listOf(EnforceStaticImport(config)))
+    override fun instance(): RuleSet =
+        RuleSet(ruleSetId, mapOf(RuleName("EnforceStaticImport") to ::EnforceStaticImport))
 }
