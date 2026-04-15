@@ -1,9 +1,10 @@
 package com.pkware.detekt.extensions.rules.micronaut
 
 import com.google.auto.service.AutoService
-import io.gitlab.arturbosch.detekt.api.Config
-import io.gitlab.arturbosch.detekt.api.RuleSet
-import io.gitlab.arturbosch.detekt.api.RuleSetProvider
+import dev.detekt.api.RuleName
+import dev.detekt.api.RuleSet
+import dev.detekt.api.RuleSetId
+import dev.detekt.api.RuleSetProvider
 
 /**
  * The Micronaut extension rule set provider for this detekt extension.
@@ -13,12 +14,8 @@ import io.gitlab.arturbosch.detekt.api.RuleSetProvider
  */
 @AutoService(RuleSetProvider::class)
 class MicronautExtensionProvider : RuleSetProvider {
-    override val ruleSetId: String = "micronaut"
+    override val ruleSetId: RuleSetId = RuleSetId("micronaut")
 
-    override fun instance(config: Config): RuleSet = RuleSet(
-        ruleSetId,
-        listOf(
-            RequireSecuredAnnotation(config),
-        ),
-    )
+    override fun instance(): RuleSet =
+        RuleSet(ruleSetId, mapOf(RuleName("RequireSecuredAnnotation") to ::RequireSecuredAnnotation))
 }

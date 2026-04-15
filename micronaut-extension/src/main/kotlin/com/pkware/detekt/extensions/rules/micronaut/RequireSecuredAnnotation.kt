@@ -1,12 +1,9 @@
 package com.pkware.detekt.extensions.rules.micronaut
 
-import io.gitlab.arturbosch.detekt.api.CodeSmell
-import io.gitlab.arturbosch.detekt.api.Config
-import io.gitlab.arturbosch.detekt.api.Debt
-import io.gitlab.arturbosch.detekt.api.Entity
-import io.gitlab.arturbosch.detekt.api.Issue
-import io.gitlab.arturbosch.detekt.api.Rule
-import io.gitlab.arturbosch.detekt.api.Severity
+import dev.detekt.api.Config
+import dev.detekt.api.Entity
+import dev.detekt.api.Finding
+import dev.detekt.api.Rule
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtNamedFunction
 
@@ -24,14 +21,11 @@ import org.jetbrains.kotlin.psi.KtNamedFunction
  *
  * @param config The detekt configuration passed into this rule.
  */
-class RequireSecuredAnnotation(config: Config = Config.empty) : Rule(config) {
-    override val issue =
-        Issue(
-            javaClass.simpleName,
-            Severity.Security,
-            "Micronaut endpoint methods must have a security annotation (@Secured, @PermitAll, @RolesAllowed, or @DenyAll).",
-            Debt.FIVE_MINS,
-        )
+class RequireSecuredAnnotation(config: Config = Config.empty) :
+    Rule(
+        config,
+        "Micronaut endpoint methods must have a security annotation (@Secured, @PermitAll, @RolesAllowed, or @DenyAll).",
+    ) {
 
     /**
      * HTTP method annotations that mark Micronaut controller endpoints.
@@ -85,7 +79,7 @@ class RequireSecuredAnnotation(config: Config = Config.empty) : Rule(config) {
             val functionName = function.name ?: "unknown"
             val message = "Endpoint method '$functionName' must have a security annotation " +
                 "(@Secured, @PermitAll, @RolesAllowed, or @DenyAll)."
-            report(CodeSmell(issue, Entity.from(function), message))
+            report(Finding(Entity.from(function), message))
         }
     }
 }

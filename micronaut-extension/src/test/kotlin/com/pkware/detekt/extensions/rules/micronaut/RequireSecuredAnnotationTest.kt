@@ -1,8 +1,9 @@
 package com.pkware.detekt.extensions.rules.micronaut
 
-import io.gitlab.arturbosch.detekt.api.SourceLocation
-import io.gitlab.arturbosch.detekt.test.assertThat
-import io.gitlab.arturbosch.detekt.test.compileAndLint
+import dev.detekt.api.SourceLocation
+import dev.detekt.test.lint
+import dev.detekt.test.location
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
@@ -21,15 +22,13 @@ class RequireSecuredAnnotationTest {
             }
         """
 
-        val findings = rule.compileAndLint(code)
+        val findings = rule.lint(code)
 
-        assertThat(findings)
-            .hasSize(1)
-            .hasStartSourceLocation(4, 17)
-        assertThat(findings.first())
-            .hasMessage(
-                "Endpoint method 'getUsers' must have a security annotation (@Secured, @PermitAll, @RolesAllowed, or @DenyAll).",
-            )
+        assertThat(findings).hasSize(1)
+        assertThat(findings[0].location.source).isEqualTo(SourceLocation(4, 17))
+        assertThat(findings[0].message).isEqualTo(
+            "Endpoint method 'getUsers' must have a security annotation (@Secured, @PermitAll, @RolesAllowed, or @DenyAll).",
+        )
     }
 
     @Test
@@ -44,7 +43,7 @@ class RequireSecuredAnnotationTest {
             }
         """
 
-        val findings = rule.compileAndLint(code)
+        val findings = rule.lint(code)
 
         assertThat(findings).hasSize(1)
     }
@@ -61,7 +60,7 @@ class RequireSecuredAnnotationTest {
             }
         """
 
-        val findings = rule.compileAndLint(code)
+        val findings = rule.lint(code)
 
         assertThat(findings).hasSize(1)
     }
@@ -77,7 +76,7 @@ class RequireSecuredAnnotationTest {
             }
         """
 
-        val findings = rule.compileAndLint(code)
+        val findings = rule.lint(code)
 
         assertThat(findings).hasSize(1)
     }
@@ -94,7 +93,7 @@ class RequireSecuredAnnotationTest {
             }
         """
 
-        val findings = rule.compileAndLint(code)
+        val findings = rule.lint(code)
 
         assertThat(findings).hasSize(1)
     }
@@ -110,7 +109,7 @@ class RequireSecuredAnnotationTest {
             }
         """
 
-        val findings = rule.compileAndLint(code)
+        val findings = rule.lint(code)
 
         assertThat(findings).hasSize(1)
     }
@@ -126,7 +125,7 @@ class RequireSecuredAnnotationTest {
             }
         """
 
-        val findings = rule.compileAndLint(code)
+        val findings = rule.lint(code)
 
         assertThat(findings).hasSize(1)
     }
@@ -142,7 +141,7 @@ class RequireSecuredAnnotationTest {
             }
         """
 
-        val findings = rule.compileAndLint(code)
+        val findings = rule.lint(code)
 
         assertThat(findings).hasSize(1)
     }
@@ -160,7 +159,7 @@ class RequireSecuredAnnotationTest {
             }
         """
 
-        val findings = rule.compileAndLint(code)
+        val findings = rule.lint(code)
 
         assertThat(findings).isEmpty()
     }
@@ -178,7 +177,7 @@ class RequireSecuredAnnotationTest {
             }
         """
 
-        val findings = rule.compileAndLint(code)
+        val findings = rule.lint(code)
 
         assertThat(findings).isEmpty()
     }
@@ -196,7 +195,7 @@ class RequireSecuredAnnotationTest {
             }
         """
 
-        val findings = rule.compileAndLint(code)
+        val findings = rule.lint(code)
 
         assertThat(findings).isEmpty()
     }
@@ -214,7 +213,7 @@ class RequireSecuredAnnotationTest {
             }
         """
 
-        val findings = rule.compileAndLint(code)
+        val findings = rule.lint(code)
 
         assertThat(findings).isEmpty()
     }
@@ -230,7 +229,7 @@ class RequireSecuredAnnotationTest {
             }
         """
 
-        val findings = rule.compileAndLint(code)
+        val findings = rule.lint(code)
 
         assertThat(findings).isEmpty()
     }
@@ -247,7 +246,7 @@ class RequireSecuredAnnotationTest {
             }
         """
 
-        val findings = rule.compileAndLint(code)
+        val findings = rule.lint(code)
 
         assertThat(findings).isEmpty()
     }
@@ -273,10 +272,10 @@ class RequireSecuredAnnotationTest {
             }
         """
 
-        val findings = rule.compileAndLint(code)
+        val findings = rule.lint(code)
 
         assertThat(findings).hasSize(3)
-        assertThat(findings).hasStartSourceLocations(
+        assertThat(findings.map { it.location.source }).containsExactly(
             SourceLocation(4, 17),
             SourceLocation(9, 17),
             SourceLocation(14, 17),
@@ -305,15 +304,13 @@ class RequireSecuredAnnotationTest {
             }
         """
 
-        val findings = rule.compileAndLint(code)
+        val findings = rule.lint(code)
 
-        assertThat(findings)
-            .hasSize(1)
-            .hasStartSourceLocation(10, 17)
-        assertThat(findings.first())
-            .hasMessage(
-                "Endpoint method 'getPublic' must have a security annotation (@Secured, @PermitAll, @RolesAllowed, or @DenyAll).",
-            )
+        assertThat(findings).hasSize(1)
+        assertThat(findings[0].location.source).isEqualTo(SourceLocation(10, 17))
+        assertThat(findings[0].message).isEqualTo(
+            "Endpoint method 'getPublic' must have a security annotation (@Secured, @PermitAll, @RolesAllowed, or @DenyAll).",
+        )
     }
 
     @Test
@@ -340,8 +337,8 @@ class RequireSecuredAnnotationTest {
             }
         """
 
-        assertThat(rule.compileAndLint(code1)).isEmpty()
-        assertThat(rule.compileAndLint(code2)).isEmpty()
+        assertThat(rule.lint(code1)).isEmpty()
+        assertThat(rule.lint(code2)).isEmpty()
     }
 
     @Test
@@ -357,7 +354,7 @@ class RequireSecuredAnnotationTest {
             }
         """
 
-        val findings = rule.compileAndLint(code)
+        val findings = rule.lint(code)
 
         assertThat(findings).isEmpty()
     }
@@ -380,7 +377,7 @@ class RequireSecuredAnnotationTest {
                 }
             """
 
-            val findings = rule.compileAndLint(code)
+            val findings = rule.lint(code)
 
             assertThat(findings).isEmpty()
         }
@@ -396,7 +393,7 @@ class RequireSecuredAnnotationTest {
                 }
             """
 
-            val findings = rule.compileAndLint(code)
+            val findings = rule.lint(code)
 
             assertThat(findings).isEmpty()
         }
@@ -410,7 +407,7 @@ class RequireSecuredAnnotationTest {
                 }
             """
 
-            val findings = rule.compileAndLint(code)
+            val findings = rule.lint(code)
 
             assertThat(findings).isEmpty()
         }
@@ -431,7 +428,7 @@ class RequireSecuredAnnotationTest {
                 }
             """
 
-            val findings = rule.compileAndLint(code)
+            val findings = rule.lint(code)
 
             assertThat(findings).hasSize(1)
         }
