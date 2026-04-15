@@ -1,0 +1,85 @@
+package com.pkware.detekt.extensions.rules.micronaut
+
+import dev.detekt.api.Config
+import dev.detekt.api.Entity
+import dev.detekt.api.Finding
+import dev.detekt.api.Rule
+import org.jetbrains.kotlin.psi.KtClassOrObject
+import org.jetbrains.kotlin.psi.KtNamedFunction
+
+/**
+ * This detekt rule ensures that all Micronaut controller endpoint methods have security annotations.
+ *
+ * Micronaut HTTP endpoint methods (those annotated with `@Get`, `@Post`, `@Put`, `@Delete`, `@Patch`, `@Head`,
+ * `@Options`, or `@Trace`) must have one of the following security annotations:
+ * - `@Secured` (io.micronaut.security.annotation.Secured)
+ * - `@PermitAll` (jakarta.annotation.security.PermitAll)
+ * - `@RolesAllowed` (jakarta.annotation.security.RolesAllowed)
+ * - `@DenyAll` (jakarta.annotation.security.DenyAll)
+ *
+ * This helps prevent accidentally creating unsecured endpoints that could expose sensitive data or operations.
+ *
+ * @param config The detekt configuration passed into this rule.
+ */
+class RequireSecuredAnnotation(config: Config = Config.empty) :
+    Rule(
+        config,
+        "Micronaut endpoint methods must have a security annotation (@Secured, @PermitAll, @RolesAllowed, or @DenyAll).",
+    ) {
+
+    /**
+     * HTTP method annotations that mark Micronaut controller endpoints.
+     * These all have the @HttpMethodMapping meta-annotation.
+     */
+    private val httpMethodAnnotations = setOf(
+        "Get",
+        "Post",
+        "Put",
+        "Delete",
+        "Patch",
+        "Head",
+        "Options",
+        "Trace",
+    )
+
+    /**
+     * Security annotations that indicate authorization rules are defined.
+     */
+    private val securityAnnotations = setOf(
+        "Secured", // io.micronaut.security.annotation.Secured
+        "PermitAll", // jakarta.annotation.security.PermitAll
+        "RolesAllowed", // jakarta.annotation.security.RolesAllowed
+        "DenyAll", // jakarta.annotation.security.DenyAll
+    )
+
+    override fun visitNamedFunction(function: KtNamedFunction) {
+        super.visitNamedFunction(function)
+
+        // Only check methods inside @Controller classes — HTTP method annotations are also
+        // used on @Client interfaces where security annotations are not applicable.
+        val containingClass = function.parent?.parent as? KtClassOrObject ?: return
+        val isController = containingClass.annotationEntries.any { annotation ->
+            annotation.shortName?.identifier == "Controller"
+        }
+        if (!isController) return
+
+        // Check if this function is a Micronaut endpoint (has an HTTP method annotation)
+        val hasHttpMethodAnnotation = function.annotationEntries.any { annotation ->
+            annotation.shortName?.identifier in httpMethodAnnotations
+        }
+
+        if (!hasHttpMethodAnnotation) return
+
+        // Check if the function has a security annotation
+        val hasSecurityAnnotation = function.annotationEntries.any { annotation ->
+            annotation.shortName?.identifier in securityAnnotations
+        }
+
+        if (!hasSecurityAnnotation) {
+            val functionName = function.name ?: "unknown"
+            val message = "Endpoint method '$functionName' must have a security annotation " +
+                "(@Secured, @PermitAll, @RolesAllowed, or @DenyAll)."
+            report(Finding(Entity.from(function), message))
+        }
+    }
+}
