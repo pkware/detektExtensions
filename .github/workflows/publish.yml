@@ -2,8 +2,8 @@ name: Publish to Maven Central
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   publish:
@@ -27,18 +27,7 @@ jobs:
           ORG_GRADLE_PROJECT_SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           ORG_GRADLE_PROJECT_SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
 
-      - name: Check version
-        id: version
-        run: |
-          version=$(grep "detektExtensionVersion" gradle.properties | cut -d'=' -f2 | tr -d ' ')
-          if [[ "$version" != *"SNAPSHOT"* ]]; then
-            echo "is_release=true" >> $GITHUB_OUTPUT
-          else
-            echo "is_release=false" >> $GITHUB_OUTPUT
-          fi
-
       - name: Notify Central Publisher Portal
-        if: steps.version.outputs.is_release == 'true'
         run: |
           token=$(echo -n "${{ secrets.NEXUS_USERNAME }}:${{ secrets.NEXUS_PASSWORD }}" | base64)
           curl -X POST \
