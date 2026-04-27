@@ -1,0 +1,22 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "simple",
+  "include-component-in-tag": false,
+  "tag-separator": "",
+  "bump-patch-for-minor-pre-major": false,
+  "generate-release-notes": true,
+  "changelog-sections": [
+    {"type": "feat", "section": "### Added"},
+    {"type": "fix", "section": "### Fixed"},
+    {"type": "deps", "section": "### Changed"},
+    {"type": "chore", "section": "### Changed", "hidden": false}
+  ],
+  "extra-files": [
+    {
+      "type": "generic",
+      "path": "gradle.properties",
+      "search": "detektExtensionVersion=\\d+\\.\\d+\\.\\d+(-SNAPSHOT)?",
+      "replace": "detektExtensionVersion={{version}}"
+    }
+  ]
+}
