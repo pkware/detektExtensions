@@ -55,10 +55,11 @@ import:
 
 ## Releasing:
 1. Change the relevant version in `gradle.properties` to a non-SNAPSHOT version.
-2. `git commit -am "Release version X.Y.Z."` (where and X.Y.Z is the new version)
-3. Push or merge to the main branch.
-4. Update `gradle.properties` to the next SNAPSHOT version.
-5. `git commit -am "Prepare next development version."`
-6. Push or merge to the main branch.
-7. After the merge, tag the release commit on the main branch. `git tag -a X.Y.Z -m "Version X.Y.Z"` (where X.Y.Z is the new version)
-8. `git push --tags`.
+2. Update the CHANGELOG.md for the impending release.
+3. `git commit -am "Release version X.Y.Z."` (where and X.Y.Z is the new version)
+4. Push or merge to the main branch.
+5. Update `gradle.properties` to the next SNAPSHOT version.
+6. `git commit -am "Prepare next development version."`
+7. Push or merge to the main branch.
+8. After the merge, tag the release commit on the main branch. `git tag -a X.Y.Z -m "Version X.Y.Z"` (where X.Y.Z is the new version)
+9. `git push --tags`.
