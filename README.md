@@ -54,17 +54,11 @@ import:
 ```
 
 ## Releasing:
-1. Make and checkout a release branch on github.
-2. Change the version in gradle.properties to a non-SNAPSHOT version.
-3. Update the CHANGELOG.md for the impending release.
-4. Run `git commit -am "Release X.Y.Z."` (where X.Y.Z is the new version) in the terminal or command
-line.
-5. Make a PR with your changes.
-6. Merge the release PR after approval, tag the commit on the main branch with
-`git tag -a X.Y.Z -m "X.Y.Z"`(X.Y.Z is the new version).
-7. Run `git push --tags`.
-8. Visit [Sonatype Nexus](https://central.sonatype.com/) and promote the artifact.
-9. Update `gradle.properties` to the next SNAPSHOT version.
-10. Run `git commit -am "Prepare next development version."`
-11. Make a PR with your changes.
-12. Merge the next version PR after approval.
+1. Change the relevant version in `gradle.properties` to a non-SNAPSHOT version.
+2. `git commit -am "Release version X.Y.Z."` (where and X.Y.Z is the new version)
+3. Push or merge to the main branch.
+4. Update `gradle.properties` to the next SNAPSHOT version.
+5. `git commit -am "Prepare next development version."`
+6. Push or merge to the main branch.
+7. After the merge, tag the release commit on the main branch. `git tag -a X.Y.Z -m "Version X.Y.Z"` (where X.Y.Z is the new version)
+8. `git push --tags`.
