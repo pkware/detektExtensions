@@ -2,7 +2,6 @@ package com.pkware.detekt.extensions.rules.staticImport
 
 import com.google.auto.service.AutoService
 import dev.detekt.api.Config
-import dev.detekt.api.Config.InvalidConfigurationError
 import dev.detekt.api.ConfigValidator
 import dev.detekt.api.Notification
 
@@ -30,7 +29,7 @@ class ImportConfigValidator : ConfigValidator {
             config.subConfig("import")
                 .subConfig("EnforceStaticImport")
                 .valueOrNull("active")
-        } catch (expected: InvalidConfigurationError) {
+        } catch (expected: Exception) {
             result.add(Notification("'active' property must be of type boolean.", Notification.Level.Error))
         }
         return result
