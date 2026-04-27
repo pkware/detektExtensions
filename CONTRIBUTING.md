@@ -45,6 +45,37 @@ Another common case is fixing a bug. Typically we'd like to see 2 commits: the f
 that reproduces the bug, and the second with the fix and any additional tests. This way, reviewers are able to see that
 the root cause was identified.
 
+### Commit message format
+This project uses [Conventional Commits](https://www.conventionalcommits.org/). All commits merged to `main` must follow this format:
+
+```
+<type>: <description>
+```
+
+Valid types:
+
+| Type | When to use | Effect on version |
+|------|-------------|-------------------|
+| `feat` | New user-facing feature | Bumps minor version |
+| `fix` | Bug fix | Bumps patch version |
+| `feat!` / `fix!` | Breaking change | Bumps major version |
+| `chore` | Maintenance, refactoring, no behavior change | No version bump |
+| `deps` | Dependency update (used automatically by Renovate) | No version bump |
+| `docs` | Documentation only | No version bump |
+| `ci` | CI/CD changes | No version bump |
+| `test` | Test-only changes | No version bump |
+| `refactor` | Code restructure without behavior change | No version bump |
+
+Examples:
+- `feat: add RequireSecuredAnnotation rule`
+- `fix: handle null receiver in EnforceStaticImport`
+- `deps: update detekt to 2.0.0-alpha.4`
+- `chore: remove unused import`
+
+This project uses rebase+merge — **each individual commit lands verbatim on `main`**. Write every commit in conventional commit format. Fixup commits (`fixup! feat: ...`) are exempt and are skipped by the CI check; squash them into their parent commit before the merge rebase.
+
+A CI check validates all non-fixup commit messages automatically. PRs with non-conforming commits cannot be merged.
+
 ### Pull request rules & process
 Once the pull request is made, do not squash until the PR has been approved and is ready for merge.
 Fixup commits should be made as separate commits, not as amends or squashed. Separate commits make
