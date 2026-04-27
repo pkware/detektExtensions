@@ -53,13 +53,8 @@ import:
       - 'org.junit.jupiter.params.provider.Arguments.arguments'
 ```
 
-## Releasing:
-1. Change the relevant version in `gradle.properties` to a non-SNAPSHOT version.
-2. Update the CHANGELOG.md for the impending release.
-3. `git commit -am "Release version X.Y.Z."` (where and X.Y.Z is the new version)
-4. Push or merge to the main branch.
-5. Update `gradle.properties` to the next SNAPSHOT version.
-6. `git commit -am "Prepare next development version."`
-7. Push or merge to the main branch.
-8. After the merge, tag the release commit on the main branch. `git tag -a X.Y.Z -m "Version X.Y.Z"` (where X.Y.Z is the new version)
-9. `git push --tags`.
+## Releasing
+Releases are automated via [release-please](https://github.com/googleapis/release-please). As commits
+accumulate on `main`, release-please maintains an open release PR that updates `CHANGELOG.md` and
+bumps the version in `gradle.properties`. Merging that PR triggers the publish workflow, which signs
+and publishes artifacts to Maven Central and creates a GitHub Release with auto-generated release notes.
