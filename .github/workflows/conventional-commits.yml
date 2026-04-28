@@ -2,11 +2,7 @@ name: Conventional Commits
 
 on:
   pull_request:
-    types:
-      - opened
-      - edited
-      - synchronize
-      - reopened
+    types: [opened, edited, synchronize, reopened]
 
 permissions:
   contents: read

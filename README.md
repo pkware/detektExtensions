@@ -54,7 +54,11 @@ import:
 ```
 
 ## Releasing
-Releases are automated via [release-please](https://github.com/googleapis/release-please). As commits
-accumulate on `main`, release-please maintains an open release PR that updates `CHANGELOG.md` and
-bumps the version in `gradle.properties`. Merging that PR triggers the publish workflow, which signs
-and publishes artifacts to Maven Central and creates a GitHub Release with auto-generated release notes.
+Releases are automated via [release-please](https://github.com/googleapis/release-please). As `feat`
+and `fix` commits accumulate on `main`, release-please maintains an open release PR that updates
+`CHANGELOG.md` and bumps the version in `gradle.properties`. Merging that PR causes release-please to
+push a semver tag, which triggers the publish workflow to sign and publish artifacts to Maven Central
+and create a GitHub Release with auto-generated release notes.
+
+Every push to `main` also publishes the current `-SNAPSHOT` version to the Maven Central snapshot
+repository at `central.sonatype.com/repository/maven-snapshots/`.
