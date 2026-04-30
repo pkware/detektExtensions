@@ -4,7 +4,6 @@
   "include-component-in-tag": false,
   "tag-separator": "",
   "bump-patch-for-minor-pre-major": false,
-  "generate-release-notes": true,
   "changelog-sections": [
     {"type": "feat", "section": "### Added"},
     {"type": "fix", "section": "### Fixed"},
@@ -18,5 +17,11 @@
       "search": "detektExtensionVersion=\\d+\\.\\d+\\.\\d+(-SNAPSHOT)?",
       "replace": "detektExtensionVersion={{version}}"
     }
-  ]
+  ],
+    "packages": {
+        ".": {
+            "tag-prefix": "",
+            "generate-release-notes": true
+        }
+    }
 }
