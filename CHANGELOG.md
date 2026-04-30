@@ -1,5 +1,15 @@
 # Change Log
 
+## [2.1.1](https://github.com/pkware/detektExtensions/compare/2.1.0...v2.1.1) (2026-04-30)
+
+
+### ### Changed
+
+* add release-please configuration ([6adc4d5](https://github.com/pkware/detektExtensions/commit/6adc4d504066f2055bc11a6222aa0bdf71041890))
+* **deps:** update googleapis/release-please-action action to v5 ([dfb7139](https://github.com/pkware/detektExtensions/commit/dfb7139d08e22ea29e311bc341cb653463960473))
+* enable semantic commits for Renovate ([b362b10](https://github.com/pkware/detektExtensions/commit/b362b10f35ba69d5154e585af23208edb5b3872c))
+* move Renovate config to .github/renovate.json5 ([271d154](https://github.com/pkware/detektExtensions/commit/271d154ba8c5f77078679d76a8363b3098264a9c))
+
 ## [Unreleased]
 
 ## [2.1.0] - 2026-04-27
