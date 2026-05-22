@@ -87,5 +87,16 @@ Merges are always fast-forward. The merged branch should be deleted at the time 
 
 Merge commits are reserved for forward-merging release branches that have received patches.
 
+## Release Process
+
+Releases are automated via [release-please](https://github.com/googleapis/release-please):
+
+1. Merge conventional commits to `main`
+2. release-please opens or updates a release PR (bumps version in `gradle.properties`)
+3. Maintainer reviews and merges the release PR
+4. release-please creates a semver tag and GitHub Release with auto-generated notes
+5. The publish workflow publishes the release to Maven Central
+6. A follow-up PR is automatically created to bump to the next SNAPSHOT version
+
 ## Conversation
 Please file issues for this extension under github issues.
