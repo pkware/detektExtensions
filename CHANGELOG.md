@@ -1,5 +1,14 @@
 # Change Log
 
+## [2.1.1](https://github.com/pkware/detektExtensions/compare/2.1.0...v2.1.1) (2026-07-01)
+
+
+### Bug Fixes
+
+* **ci:** fix release-please config to match working norm setup ([b20c6a9](https://github.com/pkware/detektExtensions/commit/b20c6a9a61080e64ced79e40273fe7cb60be0ad7))
+* **deps:** update junit-framework monorepo to v6.1.0 ([47b3be2](https://github.com/pkware/detektExtensions/commit/47b3be2de4f4ad05f76192e3d78b392574d79780))
+* **deps:** update junit-framework monorepo to v6.1.1 ([61f5678](https://github.com/pkware/detektExtensions/commit/61f56786f3f54f8a13ca807c8b045206697987a5))
+
 ## [Unreleased]
 
 ## [2.1.0] - 2026-04-27
